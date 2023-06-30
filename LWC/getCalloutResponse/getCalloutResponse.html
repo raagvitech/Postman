@@ -1,0 +1,139 @@
+<template>
+    <lightning-card title="Test your API" class="slds-align_absolute-center">
+        <lightning-accordion if:true={urlSection} allow-multiple-sections-open active-section-name={urlActiveSection} style="padding-left:20px;padding-right:20px;">
+
+            <lightning-accordion-section name="URLSEC" label="HTTP method and URL">
+
+                <lightning-layout>
+                    <lightning-combobox label="Method"
+                                        style="padding-top:20px;"
+                                        value={methodValue}
+                                        options={methodOptions}
+                                        onchange={handleMethodChange}
+                                        disabled={inputsDisabled}>
+                                        
+                    </lightning-combobox>
+                    <lightning-input label = "Rest API endpoint" placeholder ='Enter URL'  onfocusout={onUrlChange} value={urlValue} style="padding-top:20px;padding-left:20px;width: 570px;" disabled={inputsDisabled} ></lightning-input>
+
+                </lightning-layout>
+            </lightning-accordion-section>
+            <hr>
+        </lightning-accordion>
+        
+
+
+        <lightning-accordion if:true={authSection} allow-multiple-sections-open active-section-name={authActiveSection} style="padding-left:20px;padding-right:20px;">
+            <lightning-accordion-section name="AUTHSEC" label="Authentication">
+                <lightning-layout >
+
+                    <lightning-combobox
+                                    label="Add authentication"
+                                    style="width: 200px;padding-bottom:20px" 
+                                    value={authvalue}
+                                    options={authOptions}
+                                    onchange={handleAuthChange}
+                                    disabled={inputsDisabled}>
+                    </lightning-combobox>
+        
+                    <lightning-layout-item if:true={basicAuth} style="padding-left:50px;width:470px;">
+                        <lightning-input label="Username" onfocusout={usernameChange} value={username} disabled={inputsDisabled}></lightning-input>
+                        <lightning-input label="Password" onfocusout={passwordChange} value={password} disabled={inputsDisabled}></lightning-input>
+                    </lightning-layout-item>
+        
+                    <lightning-layout-item if:true={oAuth} style="padding-left: 50px;width: 470px;">
+                    
+                        <lightning-input label="Username" onfocusout={usernameChange} value={username} disabled={inputsDisabled}></lightning-input>
+                        <lightning-input  label="Password" onfocusout={passwordChange} value={password} disabled={inputsDisabled}></lightning-input>
+                        <lightning-input label="Grant type" onfocusout={grantTypeChange} value={grantType} disabled={inputsDisabled}></lightning-input>
+                        <lightning-input label="Client id" onfocusout={clientIdChange} value={clientId} disabled={inputsDisabled}></lightning-input>
+                        <lightning-input label="Client secret" onfocusout={clientSecretChange} value={clientSecret} disabled={inputsDisabled}></lightning-input>
+                        <lightning-input label="Access token URL" onfocusout={accessTokenUrlChange} value={accessTokenUrl} disabled={inputsDisabled}></lightning-input>
+
+                    </lightning-layout-item>
+        
+                    <lightning-layout-item if:true={bearerToken} style="padding-left: 50px;width: 470px;">
+                        <lightning-input label="Bearer token" onfocusout={bearerTokenValueChange} value={token} disabled={inputsDisabled} ></lightning-input>
+                    </lightning-layout-item>
+                
+                </lightning-layout>
+            </lightning-accordion-section>
+            <hr>
+        </lightning-accordion>
+        
+        <lightning-accordion if:true={bodySection} allow-multiple-sections-open active-section-name={bodyActiveSection} style="padding-left:20px;padding-right:20px">
+            <lightning-accordion-section name="BODYSEC" label="Body">
+                <h1 >Enter Body</h1>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <span>
+                                <lightning-layout for:each={forms} for:item="form" key={form} for:index="i">
+                                    <lightning-input onfocusout={keyChangeHandler} data-index={i}  disabled={inputsDisabled} value={key}>
+                                    </lightning-input>
+        
+                                    <lightning-input onfocusout={valueChangeHandler} data-index={i} style="padding-left:20px;padding-bottom:20px;" disabled={inputsDisabled} value={value}>
+                                    </lightning-input>
+                                    <lightning-button-icon  icon-name="utility:delete" onclick={delClicked} data-index={i} style="padding-left: 20px;padding-top:20px;" disabled={inputsDisabled}></lightning-button-icon>
+                                </lightning-layout>
+                            </span>
+                        </div>
+                        <div class="slds-col">
+                            <span>
+                                <lightning-layout-item if:true={generateJSONClicked}>
+                                    <pre><lightning-textarea label="Body in JSON format" value= {jsonBodyValue} style="padding-left:20px;width:500px;" class="custom-textarea" readonly></lightning-textarea></pre>
+                                    <lightning-button variant="brand" label="Clear" class="slds-var-m-around_large" onclick={clearBody} style="padding-top: 10px;" disabled={inputsDisabled}>
+                    </lightning-button>
+                                </lightning-layout-item>
+                            </span>
+                        </div>
+                    </div>
+
+        
+                    <lightning-button
+                        variant="brand"
+                        label="Add new"
+                        class="slds-var-m-around_large"
+                        onclick={addForm} style="padding-top: 10px;"
+                        disabled={inputsDisabled}>
+                    </lightning-button>
+        
+        
+                    <lightning-button
+                        variant="brand"
+                        label="Generate JSON"
+                        class="slds-var-m-around_large"
+                        onclick={generateJSON} style="padding-top: 20px;padding-left:150px"
+                        disabled={inputsDisabled}>
+                    </lightning-button> 
+            </lightning-accordion-section>
+        </lightning-accordion>
+            
+
+        <div if:true={nextSec}>
+            <lightning-button label="Next >>" variant="brand" onclick={nextSection} style="padding-right:20px;float:right;padding-bottom:20px;"></lightning-button>       
+        </div>
+    
+
+        
+    <template if:true={response}>
+        <lightning-card>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+
+                    <lightning-textarea readonly value={userInputs} label="User Inputs" style="padding-left:20px;padding-right:20px;background:darkgray;" class="custom-textarea"></lightning-textarea>
+                    <lightning-textarea readonly value={fetchedData} label="Response" style="padding-left:20px;padding-right:20px;background:darkgray;" class="custom-textarea"></lightning-textarea>
+                    
+                    <footer class="slds-modal__footer" style="background: darkgray;">
+                        <button class="slds-button slds-button_neutral" onclick={editInputs}>Edit inputs</button>
+                        <button class="slds-button slds-button_neutral" onclick={getData}>Send request</button>
+                     </footer>              
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open">
+            </div>
+        </lightning-card>
+    </template>
+    <div if:true={sendSec} >
+        <lightning-button label="Done" variant="brand" onclick={doneClicked} style="padding-right:20px;float:right;padding-bottom:20px;"></lightning-button>       
+    </div>
+    </lightning-card> 
+</template>
